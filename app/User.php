@@ -9,8 +9,8 @@ class User extends Authenticatable
 {
     use Notifiable;
 
-    const ADMIN_TYPE = 'admin';
-    const DEFAULT_TYPE = 'default';
+    const ADMIN_PERMISSION = 'admin';
+    const DEFAULT_PERMISSION = 'default';
 
     /**
      * The attributes that are mass assignable.
@@ -31,7 +31,7 @@ class User extends Authenticatable
     ];
 
     public function isAdmin()    {        
-        return $this->type === self::ADMIN_TYPE;    
+        return $this->permission === self::ADMIN_PERMISSION;    
     }
 
     public function scopeAtivos($query)
@@ -42,5 +42,9 @@ class User extends Authenticatable
     public function scopeInativos($query)
     {
         return $query->where('status', 0);
+    }
+
+    public function tipo(){
+        return $this->belongsTo('\App\Tipo', 'type_id');
     }
 }

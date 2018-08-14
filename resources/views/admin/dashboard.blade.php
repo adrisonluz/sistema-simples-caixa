@@ -2,7 +2,12 @@
 @section('content')
 <div class="container-fluid">
     @if(Session::has('alert'))
-        <div class="alert alert-{{Session::get('alert')['type']}}" role="alert">{{Session::get('alert')['text']}}</div>
+        <div class="alert alert-{{Session::get('alert')['type']}} alert-dismissible fade show" role="alert">
+            {{Session::get('alert')['text']}}
+            <button class="close" type="button" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>    
+        </div>
     @endif
     <div class="animated fadeIn">    
     <!-- /.card-->

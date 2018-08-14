@@ -13,6 +13,7 @@
     <link href="{{asset('plugins/flag-icon-css/css/flag-icon.min.css')}}" rel="stylesheet">
     <link href="{{asset('plugins/font-awesome/css/font-awesome.min.css')}}" rel="stylesheet">
     <link href="{{asset('plugins/simple-line-icons/css/simple-line-icons.css')}}" rel="stylesheet">
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
     <!-- Main styles for this application-->
     <link href="{{asset('css/style.css')}}" rel="stylesheet">
     <link href="vendors/pace-progress/css/pace.min.css" rel="stylesheet">
@@ -49,6 +50,7 @@
     <!-- Plugins and scripts required by this view-->
     <script src="{{asset('plugins/chart.js/dist/Chart.min.js')}}"></script>
     <script src="{{asset('plugins/@coreui/coreui-plugin-chartjs-custom-tooltips/dist/js/custom-tooltips.min.js')}}"></script>
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
     <script src="{{asset('js/main.js')}}"></script>
   </body>
 </html>

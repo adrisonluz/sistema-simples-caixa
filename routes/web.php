@@ -26,4 +26,7 @@ Route::name('admin.')->prefix('admin')->middleware('is_admin')->group(function (
     Route::resource('usuarios', 'AdminUsersController');
     Route::resource('caixas', 'AdminCaixasController');
     Route::resource('relatorios', 'AdminRelatoriosController');
+    Route::resource('campos', 'AdminCamposController');
+    Route::resource('tipos', 'AdminTiposController');
+    Route::resource('configuracoes', 'AdminConfiguracoesController');
 });
