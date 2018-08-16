@@ -13,7 +13,7 @@
                 <i class="nav-icon icon-people"></i> Usuários</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{route('admin.relatorios.index', ['type' => 'administrativo'])}}">
+                <a class="nav-link" href="{{route('admin.relatorios.adm')}}">
                 <i class="nav-icon icon-notebook"></i> Relatórios</a>
             </li>
             <li class="divider"></li>
@@ -23,7 +23,7 @@
                 <i class="nav-icon icon-briefcase"></i> Caixa</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{route('admin.relatorios.index', ['type' => 'financeiro'])}}">
+                <a class="nav-link" href="{{route('admin.relatorios.fin')}}">
                 <i class="nav-icon icon-notebook"></i> Relatórios</a>
             </li>
             <li class="divider"></li>

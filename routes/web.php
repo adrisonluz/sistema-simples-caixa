@@ -13,8 +13,6 @@
 
 Route::view('/', 'welcome');
 
-Auth::routes();
-
 Route::name('admin.')->prefix('admin')->middleware('auth')->group(function () {  
     Route::get('/', 'AdminController@index');
     Route::get('dashboard', 'AdminController@index')->name('dashboard');
@@ -25,8 +23,15 @@ Route::name('admin.')->prefix('admin')->middleware('auth')->group(function () {
 Route::name('admin.')->prefix('admin')->middleware('is_admin')->group(function () {  
     Route::resource('usuarios', 'AdminUsersController');
     Route::resource('caixas', 'AdminCaixasController');
-    Route::resource('relatorios', 'AdminRelatoriosController');
     Route::resource('campos', 'AdminCamposController');
     Route::resource('tipos', 'AdminTiposController');
     Route::resource('configuracoes', 'AdminConfiguracoesController');
+
+    Route::name('relatorios.')->prefix('relatorios')->group(function () {
+        Route::get('administrativo','AdminRelatoriosController@reportAdmin')->name('adm');
+        Route::get('financeiro','AdminRelatoriosController@reportFinancial')->name('fin');
+        Route::post('emitir','AdminRelatoriosController@send')->name('emitir');
+    });
 });
+
+Auth::routes();
