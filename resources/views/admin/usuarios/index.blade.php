@@ -51,7 +51,7 @@
                                     <i class="fa {{$usuario->tipo->icon}}" style="font-size:24px"></i>
                                 </td>
                                 <td>
-                                    <strong>Ativo</strong>
+                                    <strong>{{(!empty($usuario->deleted_at) ? 'Inativo' : 'Ativo')}}</strong>
                                 </td>
                                 <td>
                                     <form class="form-horizontal" action="{{route('admin.usuarios.destroy',['id' => $usuario->id])}}" method="post">

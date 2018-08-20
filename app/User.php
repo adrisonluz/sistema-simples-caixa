@@ -4,13 +4,17 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
     use Notifiable;
+    use SoftDeletes;
 
     const ADMIN_PERMISSION = 'admin';
     const DEFAULT_PERMISSION = 'default';
+
+    protected $dates = ['deleted_at'];
 
     /**
      * The attributes that are mass assignable.
@@ -34,14 +38,12 @@ class User extends Authenticatable
         return $this->permission === self::ADMIN_PERMISSION;    
     }
 
-    public function scopeAtivos($query)
-    {
-        return $query->where('status', 1);
+    public function scopeTodos($query){
+        return $query->withTrashed();
     }
 
-    public function scopeInativos($query)
-    {
-        return $query->where('status', 0);
+    public function scopeInativos($query){
+        return $query->onlyTrashed();
     }
 
     public function tipo(){

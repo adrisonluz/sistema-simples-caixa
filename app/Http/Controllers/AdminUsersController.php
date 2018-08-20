@@ -19,7 +19,7 @@ class AdminUsersController extends Controller
      */
     public function index()
     {
-        $usuarios = User::where('id', '!=', Auth::user()->id)->get();
+        $usuarios = User::todos()->where('id', '!=', Auth::user()->id)->get();
 
         return view('admin.usuarios.index')->with(compact('usuarios'));
     }
@@ -99,7 +99,7 @@ class AdminUsersController extends Controller
         $campos = Campo::all();
         $tipos = Tipo::all();
 
-        return view('admin.usuarios.form')
+        return view('admin.usuarios.perfil')
         ->with([
             'usuario' => $usuario,
             'campos' => $campos,
@@ -139,6 +139,7 @@ class AdminUsersController extends Controller
         $usuario = User::find($id);
         $usuario->name = ($request->has('name') ? $request->get('name') : $usuario->name);
         $usuario->email = ($request->has('email') ? $request->get('email') : $usuario->email);
+        $usuario->type_id = ($request->has('type_id') ? $request->get('type_id') : $usuario->type_id);
         $usuario->password = ($request->has('password') ? bcrypt($request->get('password')) : $usuario->password);
 
         if($usuario->save()){

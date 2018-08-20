@@ -18,8 +18,9 @@ class CreateTypesTable extends Migration
             $table->string('name');
             $table->string('label');
             $table->string('icon');
-            $table->integer('order');
+            $table->integer('order')->default(0);
             $table->text('description')->nullable();
+            $table->boolean('is_admin');
             $table->timestamps();
         });
     }

@@ -27,13 +27,13 @@
                             <div class="form-group">
                                 <label for="icone">Icone</label>
                                 <input class="form-control" id="icone" placeholder="Icone Font Awesome" type="text" name="icon" value="{{$tipo->icon or ''}}">
-                            </div
+                            </div>
 
                             <div class="form-group">
                                 <label for="is_admin">Admin</label>
                                 <br>
                                 <input name="is_admin" id="is_admin" {{(isset($tipo) && $tipo->is_admin == 1 ? 'checked' : '')}} data-toggle="toggle" type="checkbox">
-                            </div
+                            </div>
 
                             <div class="form-group">
                                 <label for="descricao">Descrição</label>

@@ -14,13 +14,10 @@ class AdminController extends Controller
     
     public function index()
     {
-        $usuariosAtivos = User::ativos()->get();
-        $usuariosInativos = User::inativos()->get();
-
         return view('admin.dashboard')
             ->with([
-                'usuariosAtivos' => $usuariosAtivos,
-                'usuariosInativos' => $usuariosInativos
+                'usuariosAtivos' => User::all(),
+                'usuariosInativos' => User::inativos()->get()
             ]);
     }
 }

@@ -17,7 +17,7 @@ class CreateFieldsTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('style');
-            $table->integer('order');
+            $table->integer('order')->default(0);
             $table->text('description')->nullable();
             $table->unsignedInteger('type_id')->nullable();
             $table->foreign('type_id')

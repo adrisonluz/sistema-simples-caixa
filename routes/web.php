@@ -25,12 +25,16 @@ Route::name('admin.')->prefix('admin')->middleware('is_admin')->group(function (
     Route::resource('caixas', 'AdminCaixasController');
     Route::resource('campos', 'AdminCamposController');
     Route::resource('tipos', 'AdminTiposController');
-    Route::resource('configuracoes', 'AdminConfiguracoesController');
 
     Route::name('relatorios.')->prefix('relatorios')->group(function () {
         Route::get('administrativo','AdminRelatoriosController@reportAdmin')->name('adm');
         Route::get('financeiro','AdminRelatoriosController@reportFinancial')->name('fin');
         Route::post('emitir','AdminRelatoriosController@send')->name('emitir');
+    });
+
+    Route::name('configuracoes.')->prefix('configuracoes')->group(function () {
+        Route::get('','AdminConfiguracoesController@index')->name('editar');
+        Route::post('','AdminConfiguracoesController@save')->name('salvar');
     });
 });
 

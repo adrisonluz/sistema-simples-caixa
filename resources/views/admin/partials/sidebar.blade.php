@@ -29,7 +29,7 @@
             <li class="divider"></li>
             <li class="nav-title">Configurações</li>
             <li class="nav-item">
-                <a class="nav-link" href="{{route('admin.configuracoes.index')}}">
+                <a class="nav-link" href="{{route('admin.configuracoes.editar')}}">
                 <i class="nav-icon icon-settings"></i> Geral</a>
             </li>
             <li class="nav-item">
