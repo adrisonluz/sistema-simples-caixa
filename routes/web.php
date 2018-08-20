@@ -38,4 +38,5 @@ Route::name('admin.')->prefix('admin')->middleware('is_admin')->group(function (
     });
 });
 
+Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 Auth::routes();

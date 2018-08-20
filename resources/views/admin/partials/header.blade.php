@@ -80,7 +80,7 @@
             <div class="divider"></div>
             <a class="dropdown-item" href="#">
                 <i class="fa fa-shield"></i> Lock Account</a>--}}
-            <a class="dropdown-item" href="{{url('admin/logout')}}">
+            <a class="dropdown-item" href="{{route('logout')}}">
                 <i class="fa fa-lock"></i> Sair</a>
             </div>
         </li>
