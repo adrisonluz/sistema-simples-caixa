@@ -1,105 +1,95 @@
 @extends('admin.layout')
 @section('content')
-<div class='row'>
-    <div class='col-md-6'>
-        <!-- Box -->
-        <div class="box box-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title">Vinculos</h3>
-            </div><!-- /.box-header -->
-            <!-- form start -->
-            <form role="form" action="{{ url('/turmas/' . $turma->id) }}" method="post">
-                {!! csrf_field() !!}
-                {!! method_field('PUT') !!}
-                <div class="box-body">
-                    <div class="form-group">
-                        <label>Professor</label>
-                        @if(count($professores) > 0)
-                        <select name="professor_id" class="form-control">
-                            @foreach($professores as $professor)
-                            <option value="{{ $professor->id }}" {{ $professor->id == $turma->professor_id ? 'selected="selected"' : '' }} >{{ $professor->nome }}</option>
-                            @endforeach
-                        </select>
-                        @else
-                        <p>Não há professores cadastrados.</p>
-                        @endif
+<div class="container-fluid">
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        Abrir Caixa
                     </div>
 
-                    <div class="form-group">
-                        <label>Curso</label>
-                        @if(count($cursos) > 0)
-                        <select name="curso_id" class="form-control">
-                            @foreach($cursos as $curso)
-                            <option value="{{ $curso->id }}" {{ $curso->id == $turma->curso_id ? 'selected="selected"' : '' }} >{{ $curso->nome }}</option>
-                            @endforeach
-                        </select>
-                        @else
-                        <p>Não há cursos cadastrados.</p>
-                        @endif
+                    <form role="form" action="{{ url('admin/caixas') }}" method="post">
+                        {!! csrf_field() !!}
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                  <label>Data</label>
+                                  <input class="form-control" value="{{ date('d/m/Y') }}" disabled="" type="text">
+                                  <input type="hidden" name="date" value="{{ date('d/m/Y') }}" />
+                                  <input type="hidden" name="caixa_id" value="{{ !empty($caixaMae) ? $caixaMae->id : '' }}" />
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                  <label>Hora da abertura</label>
+                                  <input class="form-control" name="start_hour" value="{{ date('H:i') }}" type="text">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                  <label>Saldo inicial R$</label>
+                                  <input class="form-control formDin" name="opening_balance" type="text">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <button type="submit" class="btn btn-primary pull-right">Abrir Caixa</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                @if(count($caixasHoje) > 0)
+                <div class="card">
+                    <div class="card-header">
+                        Caixa Hoje
+                    </div>
+
+                    <div class="card-body">   
+                        <div class="table-responsive">
+                            <table class="table table-responsive-sm table-hover table-outline mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Saldo inicial</th>
+                                        <th>Saldo final</th>
+                                        <th>Entradas</th>
+                                        <th>Saídas</th>
+                                        <th>Fechamento</th>
+                                    </tr>
+                                </thead>
+                                
+                                <tbody>
+                                    @foreach($caixasHoje as $caixaHoje)
+                                    <tr>
+                                        <th>{{ $caixaHoje->saldo_inicial }}</th>
+                                        <th>{{ $caixaHoje->saldo_final == '' ? 'em aberto' : $caixaHoje->saldo_final }}</th>
+                                        <th>{{ $caixaHoje->total_entradas == '' ? 'em aberto' : $caixaHoje->saldo_final }}</th>
+                                        <th>{{ $caixaHoje->total_saidas == '' ? 'em aberto' : $caixaHoje->total_saidas }}</th>
+                                        <th>{{ $caixaHoje->hora_fechamento == '' ? 'em aberto' : $caixaHoje->hora_fechamento }}</th>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+
+                                <tfoot>
+                                    <tr>
+                                        <th>Saldo inicial</th>
+                                        <th>Saldo final</th>
+                                        <th>Entradas</th>
+                                        <th>Saídas</th>
+                                        <th>Fechamento</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
                     </div>
                 </div>
-        </div>
-
-        <div class="box box-primary verTurmas">
-            <div class="box-header with-border">
-                <h3 class="box-title">Vincular alunos</h3>
-            </div><!-- /.box-header -->
-                <div class="box-body">
-                    <div class="form-group verTurmas">
-                        <label>Vincular alunos</label>
-                        @if(count($alunos) > 0)
-                        <select name="alunos[]" multiple class="form-control">
-                            @foreach($alunos as $aluno)
-                            <option value="{{ $aluno->id }}">{{ $aluno->nome }}</option>
-                            @endforeach
-                        </select>
-                        @else
-                        <p>Não há alunos cadastrados.</p>
-                        @endif
-                    </div>
-                </div>
-        </div>
-    </div><!-- /.col -->
-
-    <div class="col-md-6">
-        <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Informações</h3>
-                </div><!-- /.box-header -->
-                    <div class="box-body">
-                        <div class="form-group">
-                        <label for="cadastro">Dias na semana</label>
-                        <input class="form-control" name="dias" placeholder="Ex: Seg e Qua" type="text" value="{{ $turma->dias }}">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="cadastro">Horário</label>
-                        <input class="form-control" name="horario" placeholder="Ex: 14:00 às 15:00" type="text" value="{{ $turma->horario }}">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="cadastro">Vagas</label>
-                        <input class="form-control" name="vagas" placeholder="Total de vagas" type="text" value="{{ $turma->vagas }}">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="cadastro">Aulas dadas</label>
-                        <input class="form-control" name="aulas_dadas" placeholder="Se a turma já começou, informar" type="text" value="{{ $turma->aulas_dadas }}">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="cadastro">Valor da mensalidade</label>
-                        <input class="form-control formDin" name="valor_mensalidade" placeholder="Valor" value="{{ $turma->valor_mensalidade }}">
-                    </div>
-
-                    <div class="box-footer">
-                        <button type="button" class="btn btn-success verTurmas">Vincular alunos</button>
-                        <button type="submit" class="btn btn-primary pull-right">Salvar</button>
-                    </div>
-                </form>
+                @endif
             </div>
         </div>
-    </div><!-- /.col -->
-
-</div><!-- /.row -->
+    </div>
+</div>       
 @endsection

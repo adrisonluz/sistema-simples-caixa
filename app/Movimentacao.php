@@ -21,8 +21,8 @@ class Movimentacao extends Model
         $caixa = Caixa::find($id);
         $entradas = $this->getEntradas($id);
         $saidas = $this->getSaidas($id);
-
-        $saldo = $caixa->opening_balance + $entradas - $saidas;
+        
+        $saldo = (number_format(str_replace(',', '.', $caixa->opening_balance), 2, '.', '')) + $entradas - $saidas;
         return $saldo;
     }
 

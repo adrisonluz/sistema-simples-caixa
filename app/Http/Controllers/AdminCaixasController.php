@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests;
+use App\User;
 use App\Caixa;
 use App\Movimentacao;
 use App\Usuario;
@@ -13,29 +14,22 @@ use Auth;
 use Carbon\Carbon;
 
 class AdminCaixasController extends Controller {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index() {
         return redirect('admin/caixas/extrato');
     }
 
     public function extrato() {
         $caixas = Caixa::all();
-        
-        return view('admin.caixas.index')->with(compact('caixas'));
+        $caixaAberto = Caixa::where(['date' => Carbon::now()->toDateString(), 'end_balance' => null])->first();
+
+        return view('admin.caixas.index')->with([
+            'caixas' => $caixas
+            'caixa_aberto' => $caixaAberto
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create() {
         $caixasHoje = Caixa::where(['date' => Carbon::now()->toDateString()])->get();
-        //$data->where('deleted_at','>', Carbon::parse($deleted_date_ini)->startOfDay());
         $caixaMae = Caixa::where(['date' => Carbon::now()->toDateString()])->first();
         
         $caixaAberto = Caixa::where(['date' => Carbon::now()->toDateString(), 'end_balance' => null])->first();
@@ -50,166 +44,112 @@ class AdminCaixasController extends Controller {
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request) {
         $rules = array(
             'date' => 'required',
-            'hora_abertura' => 'required',
-            'saldo_inicial' => 'required',
+            'start_hour' => 'required',
+            'opening_balance' => 'required',
         );
 
         $validator = Validator($request->all(), $rules);
 
         if ($validator->fails()) {
-            return redirect($this->area . '/create')
+            return redirect('admin/caixas/create')
                             ->withErrors($validator)
                             ->withInput($request->all());
         } else {
-            // store
             $caixa = new Caixa;
             $caixa->caixa_id = $request->get('caixa_id');
             $caixa->date = $request->get('date');
-            $caixa->hora_abertura = $request->get('hora_abertura');
-            $caixa->saldo_inicial = $request->get('saldo_inicial');
-
+            $caixa->start_hour = $request->get('start_hour');
+            $caixa->opening_balance = $request->get('opening_balance');
             $caixa->save();
 
-            // redirect
             Session::flash('success', 'Caixa aberto com sucesso!');
-            return redirect($this->area . '/extrato');
+            return redirect('admin/caixas/extrato');
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id) {
         $caixa = Caixa::find($id);
         $caixasRelacionados = Caixa::where(['date' => $caixa->date])->get();
-        $entradas = Movimentacao::where(['tipo' => 'entrada', 'caixa_id' => $id])->get();
-        $saidas = Movimentacao::where(['tipo' => 'saida', 'caixa_id' => $id])->get();
-        $alunos = Usuario::where(['nivel' => 'aluno', 'lixeira' => null])->get();
+        $entradas = Movimentacao::where(['type' => 'entry', 'caixa_id' => $id])->get();
+        $saidas = Movimentacao::where(['type' => 'output', 'caixa_id' => $id])->get();
+        $usuarios = User::all();
 
         $saldoParcial = new Movimentacao;
         $saldo = $saldoParcial->getSaldo($caixa->id);
 
-        $pageTitle = 'Caixa - ' . $caixa->date;
-
-        $this->arrayReturn += [
+        return view('admin.caixas.perfil')->with([
             'caixa' => $caixa,
             'saldo' => number_format($saldo, 2, '.', ''),
             'entradas' => $entradas,
             'caixasRelacionados' => $caixasRelacionados,
             'saidas' => $saidas,
-            'alunos' => $alunos,
-            'page_title' => $pageTitle,
-            'mapList' => $this->mapList
-        ];
-
-        return view($this->area . '.perfil', $this->arrayReturn);
+            'usuarios' => $usuarios
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id) {
         $caixa = Caixa::find($id);
 
-        $professores = Usuario::where(['nivel' => 'aluno_prof', 'lixeira' => null])->get();
-        $alunos = Usuario::where(['nivel' => 'aluno', 'lixeira' => null])->get();
+        $professores = User::where(['nivel' => 'aluno_prof', 'lixeira' => null])->get();
+        $usuarios = User::where(['nivel' => 'aluno', 'lixeira' => null])->get();
         $cursos = Curso::all();
 
-        $pageTitle = 'Usuários - Editar: ' . $turma->curso->nome . ' | ' . $turma->professor->nome;
-        $this->mapList[] = array('nome' => 'Editar', 'icon' => 'fa-edit', 'link' => '/' . $this->area . '/' . $id . '/edit');
-
         if ($turma) {
-            $this->arrayReturn += [
+            return view('admin/caixas/editar')->with([
                 'turma' => $turma,
                 'alunos' => $alunos,
                 'professores' => $professores,
-                'cursos' => $cursos,
-                'page_title' => $pageTitle,
-                'mapList' => $this->mapList
-            ];
-
-            return view($this->area . '/editar', $this->arrayReturn);
+                'cursos' => $cursos
+            ]);
         } else {
             Session::flash('error', 'Turma não encontrada!');
-            return redirect($this->area);
+            return redirect('admin/caixas');
         }
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id) {
         $rules = array(
             'date' => 'required',
-            'hora_abertura' => 'required',
-            'saldo_inicial' => 'required',
+            'start_hour' => 'required',
+            'opening_balance' => 'required',
         );
 
         $validator = Validator($request->all(), $rules);
 
         if ($validator->fails()) {
-            return redirect($this->area . '/edit/' . $id)
+            return redirect('admin/caixas/edit/' . $id)
                             ->withErrors($validator)
                             ->withInput($request->all());
         } else {
-            // store
             $turma = Caixa::finc($id);
-            $turma->hora_fechamento = $request->get('hora_fechamento');
-            $turma->saldo_final = $request->get('saldo_final');
-            $turma->total_entradas = $request->get('total_entradas');
-            $turma->total_saidas = $request->get('total_saidas');
-
+            $turma->end_hour = $request->get('end_hour');
+            $turma->end_balance = $request->get('end_balance');
+            $turma->total_entries = $request->get('total_entries');
+            $turma->total_outputs = $request->get('total_outputs');
             $turma->save();
 
-            // redirect
             Session::flash('success', 'Caixa fechado com sucesso!');
-            return redirect($this->area);
+            return redirect('admin/caixas');
         }
     }
 
     public function fechar(Request $request, $id) {
-
-        // store
         $caixa = Caixa::find($id);
-        $caixa->hora_fechamento = date('H:i');
+        $caixa->end_hour = date('H:i');
 
         $mov = new Movimentacao;
-        $caixa->saldo_final = $mov->getSaldo($id);
-        $caixa->total_entradas = $mov->getEntradas($id);
-        $caixa->total_saidas = $mov->getSaidas($id);
-
+        $caixa->end_balance = $mov->getSaldo($id);
+        $caixa->total_entries = $mov->getEntradas($id);
+        $caixa->total_outputs = $mov->getSaidas($id);
         $caixa->save();
 
-        // redirect
         Session::flash('success', 'Caixa fechado com sucesso!');
-        return redirect('caixa/extrato');
+        return redirect('admin/caixas/extrato');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id) {
         //
     }
