@@ -46,7 +46,7 @@
                                     <th>{{ $caixa->start_hour }}</th>
                                     <th>{{ !empty($caixa->end_hour) ? $caixa->end_hour : 'em aberto' }}</th>
                                     <th>{{ $caixa->opening_balance }}</th>
-                                    <th>{{ !empty($caixa->end_balance) ? number_format($caixa->end_balance, 2, ',', '.') : 'em aberto' }}</th>
+                                    <th>{{ !empty($caixa->end_balance) ? $caixa->end_balance : 'em aberto' }}</th>
                                     <th>{{ !empty($caixa->total_entries) ? $caixa->total_entries : (empty($caixa->end_balance) ? 'em aberto' : '0,00') }}</th>
                                     <th>{{ !empty($caixa->total_outputs) ? $caixa->total_outputs : (empty($caixa->end_balance) ? 'em aberto' : '0,00') }}</th>
                                     <th><a href="{{ url('admin/caixas/' . $caixa->id ) }}" title="Ver movimentação"><i class="icon fa fa-search"></i></a></th>
@@ -54,15 +54,18 @@
                                 @endforeach
                             </tbody>    
                         </table>
-                        @endif
-
-                        @if(count($caixas) == 0 || !empty($caixaAberto))
+                        @else
                         <h5>
                             Nenhum registro de caixa.
                         </h5>
-                        <p><a href="{{url('admin/caixas/create')}}" class="btn btn-primary">Abrir caixa</a></p>
                         @endif  
                     </div>
+
+                    @if(count($caixas) == 0 || empty($caixaAberto))
+                    <div class="card-footer">
+                        <p><a href="{{url('admin/caixas/create')}}" class="btn btn-primary pull-right">Abrir caixa</a></p>
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>

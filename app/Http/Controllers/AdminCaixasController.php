@@ -23,7 +23,7 @@ class AdminCaixasController extends Controller {
         $caixaAberto = Caixa::where(['date' => Carbon::now()->toDateString(), 'end_balance' => null])->first();
 
         return view('admin.caixas.index')->with([
-            'caixas' => $caixas
+            'caixas' => $caixas,
             'caixa_aberto' => $caixaAberto
         ]);
     }
@@ -82,7 +82,7 @@ class AdminCaixasController extends Controller {
 
         return view('admin.caixas.perfil')->with([
             'caixa' => $caixa,
-            'saldo' => number_format($saldo, 2, '.', ''),
+            'saldo' => number_format($saldo, 2, ',', ''),
             'entradas' => $entradas,
             'caixasRelacionados' => $caixasRelacionados,
             'saidas' => $saidas,
@@ -141,9 +141,9 @@ class AdminCaixasController extends Controller {
         $caixa->end_hour = date('H:i');
 
         $mov = new Movimentacao;
-        $caixa->end_balance = $mov->getSaldo($id);
-        $caixa->total_entries = $mov->getEntradas($id);
-        $caixa->total_outputs = $mov->getSaidas($id);
+        $caixa->end_balance = number_format($mov->getSaldo($id), 2, ',', '');
+        $caixa->total_entries = number_format($mov->getEntradas($id), 2, ',', '');
+        $caixa->total_outputs = number_format($mov->getSaidas($id), 2, ',', '');
         $caixa->save();
 
         Session::flash('success', 'Caixa fechado com sucesso!');

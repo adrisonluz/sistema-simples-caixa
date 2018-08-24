@@ -32,7 +32,7 @@ class Movimentacao extends Model
         $entradaParcial = 0;
         if(count($entradas) > 0 ){
             foreach($entradas as $valEntrada){
-                $entradaParcial += $valEntrada->valor;
+                $entradaParcial += (number_format(str_replace(',', '.', $valEntrada->value), 2, '.', ''));
             }
         }
 
@@ -45,7 +45,7 @@ class Movimentacao extends Model
         $saidaParcial = 0;
         if(count($saidas) > 0 ){
             foreach($saidas as $valSaida){
-                $saidaParcial += $valSaida->valor;
+                $saidaParcial += (number_format(str_replace(',', '.', $valSaida->value), 2, '.', ''));
             }
         }
 

@@ -50,7 +50,7 @@
     </div>
 
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-6">
         <div class="card">
           <div class="card-header">
             Entradas neste caixa
@@ -76,9 +76,9 @@
                 <tbody>
                     @foreach($entradas as $entrada)
                     <tr>
-                        <td>{{ $entrada->hora }}</td>
-                        <td>{{ $entrada->valor }}</td>
-                        <td>{{ $entrada->desc }}</td>
+                        <td>{{ $entrada->created_at }}</td>
+                        <td>{{ number_format(str_replace(',','.',$entrada->value), 2, ',', '') }}</td>
+                        <td>{{ $entrada->description }}</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -89,10 +89,8 @@
           </div>
         </div>
       </div><!-- /.col -->
-    </div>
 
-    <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-6">
         <div class="card">
           <div class="card-header">
             Saidas neste caixa
@@ -118,9 +116,9 @@
                 <tbody>
                     @foreach($saidas as $saida)
                     <tr>
-                        <td>{{ $saida->hora }}</td>
-                        <td>{{ $saida->valor }}</td>
-                        <td>{{ $saida->desc }}</td>
+                      <td>{{ $saida->created_at }}</td>
+                      <td>{{ number_format(str_replace(',','.',$saida->value), 2, ',', '') }}</td>
+                      <td>{{ $saida->description }}</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -172,29 +170,31 @@
                   @if($caixaRelacionado->id == $caixa->id)
 
                   @else
-                  <div class="form-group col-md-2">
-                    <label>Hora da abertura</label>
-                    <input class="form-control" name="start_hour" disabled="disabled" value="{{ $caixaRelacionado->start_hour }}" type="text">
-                  </div>
-                  <div class="form-group col-md-2">
-                    <label>Hora do fechamento</label>
-                    <input class="form-control" name="end_hour" disabled="disabled" value="{{ $caixaRelacionado->end_hour }}" type="text">
-                  </div>
-                  <div class="form-group col-md-2">
-                    <label>Saldo inicial</label>
-                    <input class="form-control" name="opening_balance" disabled="disabled" value="{{ $caixaRelacionado->opening_balance }}" type="text">
-                  </div>
-                  <div class="form-group col-md-2">
-                    <label>Total entradas</label>
-                    <input class="form-control" name="total_entries" disabled="disabled" value="{{ $caixaRelacionado->total_entries }}" type="text">
-                  </div>
-                  <div class="form-group col-md-2">
-                    <label>Total saídas</label>
-                    <input class="form-control" name="total_outputs" disabled="disabled" value="{{ $caixaRelacionado->total_outputs }}" type="text">
-                  </div>
-                  <div class="form-group col-md-2">
-                    <label>Saldo final</label>
-                    <input class="form-control" name="end_balance" disabled="disabled" value="{{ $caixaRelacionado->end_balance }}" type="text">
+                  <div class="row">
+                    <div class="form-group col-md-2">
+                      <label>Hora da abertura</label>
+                      <input class="form-control" name="start_hour" disabled="disabled" value="{{ $caixaRelacionado->start_hour }}" type="text">
+                    </div>
+                    <div class="form-group col-md-2">
+                      <label>Hora do fechamento</label>
+                      <input class="form-control" name="end_hour" disabled="disabled" value="{{ $caixaRelacionado->end_hour }}" type="text">
+                    </div>
+                    <div class="form-group col-md-2">
+                      <label>Saldo inicial</label>
+                      <input class="form-control" name="opening_balance" disabled="disabled" value="{{ $caixaRelacionado->opening_balance }}" type="text">
+                    </div>
+                    <div class="form-group col-md-2">
+                      <label>Total entradas</label>
+                      <input class="form-control" name="total_entries" disabled="disabled" value="{{ $caixaRelacionado->total_entries }}" type="text">
+                    </div>
+                    <div class="form-group col-md-2">
+                      <label>Total saídas</label>
+                      <input class="form-control" name="total_outputs" disabled="disabled" value="{{ $caixaRelacionado->total_outputs }}" type="text">
+                    </div>
+                    <div class="form-group col-md-2">
+                      <label>Saldo final</label>
+                      <input class="form-control" name="end_balance" disabled="disabled" value="{{ $caixaRelacionado->end_balance }}" type="text">
+                    </div>
                   </div>
                   @endif
                   @endforeach
@@ -218,20 +218,13 @@
           {!! csrf_field() !!}
             <div class="form-group">
               <label>Valor</label>
-              <input class="form-control formDin" value="" name="valor" type="text">
+              <input class="form-control formDin" value="" name="value" type="text">
               <input type="hidden" name="caixa_id" value="{{ $caixa->id }}" />
-            </div>
-
-            <div class="form-group">
-                <label>Tipo de movimentação</label>
-                <select name="desc_select" class="form-control change">
-                    <option value="change">Outros</option>
-                </select>
             </div>
 
             <div class="form-group change">
               <label>Descrição</label>
-              <textarea name="desc_textarea" class="form-control" placeholder="Descreva esta entrada."></textarea>
+              <textarea name="description" class="form-control" placeholder="Descreva esta entrada."></textarea>
             </div>
       </div>
       <div class="modal-footer">
@@ -254,21 +247,13 @@
           {!! csrf_field() !!}
           <div class="form-group">
             <label>Valor</label>
-            <input class="form-control formDin" value="" name="valor" type="text">
+            <input class="form-control formDin" value="" name="value" type="text">
             <input type="hidden" name="caixa_id" value="{{ $caixa->id }}" />
-          </div>
-
-          <div class="form-group">
-              <label>Tipo de movimentação</label>
-              <select name="desc_select" class="form-control change">
-                  <option value="outros">Outros</option>
-                  <option value="mensalidade">Mensalidade</option>
-              </select>
           </div>
 
           <div class="form-group change">
             <label>Descrição</label>
-            <textarea name="desc_textarea" class="form-control" placeholder="Descreva esta saida."></textarea>
+            <textarea name="description" class="form-control" placeholder="Descreva esta saida."></textarea>
           </div>
       </div>
       <div class="modal-footer">
