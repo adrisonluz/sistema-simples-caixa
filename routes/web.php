@@ -22,9 +22,15 @@ Route::name('admin.')->prefix('admin')->middleware('auth')->group(function () {
 
 Route::name('admin.')->prefix('admin')->middleware('is_admin')->group(function () {  
     Route::resource('usuarios', 'AdminUsersController');
-    Route::resource('caixas', 'AdminCaixasController');
     Route::resource('campos', 'AdminCamposController');
     Route::resource('tipos', 'AdminTiposController');
+
+    Route::get('caixas/extrato', 'AdminCaixasController@extrato');
+    Route::post('caixas/fechar/{id}', 'AdminCaixasController@fechar');
+    Route::resource('caixas', 'AdminCaixasController');
+
+    Route::post('movimentacao/entrada', 'AdminMovimentacaoController@entrada');
+    Route::post('movimentacao/saida', 'AdminMovimentacaoController@saida');
 
     Route::name('relatorios.')->prefix('relatorios')->group(function () {
         Route::get('administrativo','AdminRelatoriosController@reportAdmin')->name('adm');
